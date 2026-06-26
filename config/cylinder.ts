@@ -4,7 +4,13 @@ export const cylinder: CylinderConfig = {
   radius: 300,
   horizontalRadius: 500,
   perspective: 1000,
-  depth: { minOpacity: 0.3, scaleRange: 0.3 },
+  depth: { scaleRange: 0.3 },
+  opacity: {
+    active: 1,
+    min: 0.3,
+    falloffPerStep: 0.14,
+    transitionDuration: 0,
+  },
   responsive: {
     radiusVw: 0.15,
     horizontalRadiusVw: 0.25,

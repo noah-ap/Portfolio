@@ -18,12 +18,20 @@ export function presetToSpring(preset: ResolvedAnimationPreset) {
   }
 }
 
+const CSS_TO_MOTION_EASING: Record<string, string> = {
+  linear: 'linear',
+  ease: 'easeInOut',
+  'ease-in': 'easeIn',
+  'ease-out': 'easeOut',
+  'ease-in-out': 'easeInOut',
+}
+
 function parseEasing(easing: string): number[] | string {
   const match = easing.match(/cubic-bezier\(([^)]+)\)/)
   if (match) {
     return match[1].split(',').map((v) => parseFloat(v.trim()))
   }
-  return easing
+  return CSS_TO_MOTION_EASING[easing] ?? easing
 }
 
 export function getMotionTransition(

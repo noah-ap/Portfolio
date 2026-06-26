@@ -1,4 +1,5 @@
 import type { ResolvedTheme } from '@/lib/types/theme'
+import { buildTextGlowCssVars } from '@/lib/styles/glowStyles'
 
 export function themeToCssVars(resolved: ResolvedTheme): Record<string, string> {
   const { colors, typography } = resolved
@@ -23,6 +24,7 @@ export function themeToCssVars(resolved: ResolvedTheme): Record<string, string> 
     '--font-page-description-line-height': String(typography.pageDescription.lineHeight),
     '--font-page-subtitle-size': `${typography.pageSubtitle.fontSize}px`,
     '--font-page-subtitle-weight': String(typography.pageSubtitle.fontWeight),
+    ...buildTextGlowCssVars(resolved),
   }
 }
 

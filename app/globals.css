@@ -24,6 +24,25 @@ body.scroll-locked {
   overflow: hidden;
 }
 
+button:focus,
+button:focus-visible {
+  outline: none;
+}
+
+.active-text-glow {
+  animation: active-text-glow-pulse var(--glow-pulse-duration) var(--glow-pulse-easing) infinite;
+}
+
+@keyframes active-text-glow-pulse {
+  0%,
+  100% {
+    text-shadow: var(--glow-text-shadow-min);
+  }
+  50% {
+    text-shadow: var(--glow-text-shadow-max);
+  }
+}
+
 .project-tab-inner {
   transform-origin: center center;
 }

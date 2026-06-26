@@ -6,6 +6,7 @@ import type { NavigationConfig } from '@/lib/types/navigation'
 import type { SpacingConfig } from '@/lib/types/spacing'
 import type { TabsConfig, ResponsiveSize } from '@/lib/types/tabs'
 import type { ResolvedTheme } from '@/lib/types/theme'
+import { getActiveGlowStyle } from '@/lib/styles/glowStyles'
 
 function toClamp(size: ResponsiveSize): string {
   return `clamp(${size.min}px, ${size.preferredVw}vw, ${size.max}px)`
@@ -41,10 +42,12 @@ export function getTabCardStyle(
 
 export function getTabInnerStyle(
   tabs: TabsConfig,
+  theme: ResolvedTheme,
   isActive: boolean,
   hoverPreset: ResolvedAnimationPreset
 ): CSSProperties {
   const scale = isActive ? tabs.active.scale : tabs.default.scale
+  const { boxShadow } = getActiveGlowStyle(theme, isActive)
 
   return {
     ['--tab-scale' as string]: scale,
@@ -54,7 +57,9 @@ export function getTabInnerStyle(
     width: '100%',
     height: '100%',
     transform: `scale(${scale})`,
-    transition: `transform var(--tab-transition)`,
+    transition: `transform var(--tab-transition), box-shadow ${theme.glow.transitionMs}ms ease`,
+    borderRadius: tabs.card.borderRadius,
+    boxShadow,
   }
 }
 
@@ -171,6 +176,7 @@ export function getIndicatorStyle(
     cursor: 'pointer',
     padding: 0,
     flexShrink: 0,
+    outline: 'none',
   }
 }
 
@@ -180,5 +186,6 @@ export function getTabButtonResetStyle(): CSSProperties {
     border: 'none',
     padding: 0,
     cursor: 'pointer',
+    outline: 'none',
   }
 }

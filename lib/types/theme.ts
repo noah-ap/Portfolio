@@ -7,6 +7,27 @@ export interface ThemeColors {
   ring: { active: string; inactive: string }
   indicator: { active: string; inactive: string }
   overlay: { from: string; to: string }
+  glow: { active: string; activeBright: string }
+}
+
+export interface GlowTextConfig {
+  blurMin: number
+  spreadMin: number
+  blurMax: number
+  spreadMax: number
+}
+
+export interface GlowPulseConfig {
+  durationMs: number
+  easing: string
+}
+
+export interface GlowEffectConfig {
+  blur: number
+  spread: number
+  transitionMs: number
+  text: GlowTextConfig
+  pulse: GlowPulseConfig
 }
 
 export interface ThemeFogColors {
@@ -36,10 +57,14 @@ export interface ThemePreset {
 
 export interface ThemeConfig {
   preset: ThemePresetName
+  glow: GlowEffectConfig
   presets: Record<ThemePresetName, ThemePreset>
 }
 
-export type ResolvedTheme = ThemePreset & { presetName: ThemePresetName }
+export type ResolvedTheme = ThemePreset & {
+  presetName: ThemePresetName
+  glow: GlowEffectConfig
+}
 
 export type ThemeToken =
   | 'colors.background'
@@ -54,3 +79,5 @@ export type ThemeToken =
   | 'indicator.inactive'
   | 'overlay.from'
   | 'overlay.to'
+  | 'glow.active'
+  | 'glow.activeBright'

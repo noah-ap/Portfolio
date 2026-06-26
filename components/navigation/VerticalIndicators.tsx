@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import type { NavigationConfig } from '@/lib/types/navigation'
 import type { Project } from '@/lib/types/project'
 import type { ResolvedTheme } from '@/lib/types/theme'
@@ -17,18 +17,6 @@ interface VerticalIndicatorsProps {
   breakpoints: BreakpointsConfig
   resolvedTheme: ResolvedTheme
   onSelect: (index: number) => void
-}
-
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1920
-  )
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  return width
 }
 
 function pickResponsive(
@@ -49,7 +37,7 @@ export function VerticalIndicators({
   resolvedTheme,
   onSelect,
 }: VerticalIndicatorsProps) {
-  const width = useWindowWidth()
+  const width = useViewportWidth()
   const { indicators } = navigation
   const navPreset = resolveAnimation('navFadeIn')
   const staggerPreset = resolveAnimation('indicatorStagger')
@@ -58,16 +46,20 @@ export function VerticalIndicators({
 
   if (!indicators.enabled) return null
 
-  const left = pickResponsive(indicators.position.left, width, breakpoints)
+  const offset = pickResponsive(indicators.position.offset, width, breakpoints)
+  const edgePosition =
+    indicators.position.side === 'right' ? { right: offset } : { left: offset }
   const gap = width < breakpoints.sm ? indicators.gap * 0.75 : indicators.gap
   const dotWidth = width < breakpoints.sm ? indicators.size * 0.75 : indicators.size
   const activeHeight =
     width < breakpoints.sm ? indicators.activeHeight * 0.75 : indicators.activeHeight
 
+  const staggerDelaySec = (staggerPreset.delay ?? 0) / 1000
+
   return (
     <motion.div
       className="absolute top-1/2 -translate-y-1/2 flex flex-col z-30"
-      style={{ left, gap }}
+      style={{ ...edgePosition, gap }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={navTransition}
@@ -79,10 +71,10 @@ export function VerticalIndicators({
             key={project.id}
             type="button"
             aria-label={`Navigate to ${project.title}`}
+            aria-current={isActive ? 'true' : undefined}
             onClick={() => onSelect(index)}
             style={{
               width: dotWidth,
-              height: isActive ? activeHeight : dotWidth,
               borderRadius: dotWidth,
               backgroundColor: resolveThemeToken(
                 isActive ? indicators.colors.active : indicators.colors.inactive,
@@ -91,12 +83,25 @@ export function VerticalIndicators({
               border: 'none',
               cursor: 'pointer',
               padding: 0,
+              flexShrink: 0,
+              outline: 'none',
             }}
             initial={{ opacity: 0, scale: staggerPreset.scale ?? 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              height: isActive ? activeHeight : dotWidth,
+            }}
             transition={{
-              ...staggerTransition,
-              delay: (staggerPreset.delay ?? 0) * index,
+              opacity: {
+                ...staggerTransition,
+                delay: staggerDelaySec * index,
+              },
+              scale: {
+                ...staggerTransition,
+                delay: staggerDelaySec * index,
+              },
+              height: { duration: 0.2, ease: 'easeOut' },
             }}
           />
         )

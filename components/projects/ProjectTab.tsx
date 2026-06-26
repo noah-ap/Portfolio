@@ -45,7 +45,7 @@ export function ProjectTab({
     >
       <div
         className="project-tab-inner"
-        style={getTabInnerStyle(tabs, isActive, hoverPreset)}
+        style={getTabInnerStyle(tabs, theme, isActive, hoverPreset)}
       >
         <div style={getTabCardStyle(tabs, theme, isActive)}>
           {project.image ? (

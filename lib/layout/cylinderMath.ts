@@ -30,13 +30,22 @@ export function calculateDepthScale(
   return baseScale + normalized * scaleRange
 }
 
-export function calculateDepthOpacity(
-  z: number,
-  radius: number,
-  minOpacity: number
+export function calculateAngularDistanceOpacity(
+  index: number,
+  total: number,
+  rotation: number,
+  activeOpacity: number,
+  minOpacity: number,
+  falloffPerStep: number
 ): number {
-  const normalized = (z + radius) / (2 * radius)
-  return minOpacity + (1 - minOpacity) * normalized
+  if (total <= 1) return activeOpacity
+
+  const angleDeg = (index * 360) / total - rotation
+  const wrapped = ((angleDeg % 360) + 360) % 360
+  const angularDist = Math.min(wrapped, 360 - wrapped)
+  const stepDistance = (angularDist * total) / 360
+
+  return Math.max(minOpacity, activeOpacity - falloffPerStep * stepDistance)
 }
 
 export function getResponsiveRadius(

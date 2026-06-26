@@ -7,7 +7,10 @@ export const navigation: NavigationConfig = {
     size: 8,
     activeHeight: 32,
     gap: 8,
-    position: { left: { sm: 12, md: 16, lg: 32 } },
+    position: {
+      side: 'right',
+      offset: { sm: 12, md: 16, lg: 32 },
+    },
     colors: {
       active: 'indicator.active',
       inactive: 'indicator.inactive',

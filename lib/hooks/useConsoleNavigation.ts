@@ -33,6 +33,17 @@ export function useConsoleNavigation({
     if (!scroll.enabled || !keyboardEnabled) return
 
     function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.key === 'ArrowLeft' ||
+        e.key === 'ArrowRight' ||
+        e.key === 'ArrowUp' ||
+        e.key === 'ArrowDown'
+      ) {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur()
+        }
+      }
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault()
         if (scroll.arrowHorizontal === 'rotateTabs') onRotatePrev()

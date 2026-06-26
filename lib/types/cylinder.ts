@@ -4,7 +4,14 @@ export interface CylinderConfig {
   radius: number
   horizontalRadius: number
   perspective: number
-  depth: { minOpacity: number; scaleRange: number }
+  depth: { scaleRange: number }
+  opacity: {
+    active: number
+    min: number
+    falloffPerStep: number
+    /** Opacity transition during rotation in ms. 0 = instant, tied to carousel spin. */
+    transitionDuration: number
+  }
   responsive: {
     radiusVw: number
     horizontalRadiusVw: number

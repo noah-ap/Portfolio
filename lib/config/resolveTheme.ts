@@ -7,5 +7,6 @@ export function resolveTheme(
   return {
     presetName,
     ...theme.presets[presetName],
+    glow: theme.glow,
   }
 }

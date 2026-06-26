@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
+import { getActiveTextGlowClassName } from '@/lib/styles/glowStyles'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import type { Category } from '@/lib/types/category'
 import type { BreakpointsConfig } from '@/lib/types/breakpoints'
 import type { NavigationConfig } from '@/lib/types/navigation'
@@ -17,18 +18,6 @@ interface CategoryNavProps {
   breakpoints: BreakpointsConfig
   resolvedTheme: ResolvedTheme
   onSelect: (categoryId: string) => void
-}
-
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1920
-  )
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  return width
 }
 
 function pickResponsive(
@@ -49,7 +38,7 @@ export function CategoryNav({
   resolvedTheme,
   onSelect,
 }: CategoryNavProps) {
-  const width = useWindowWidth()
+  const width = useViewportWidth()
   const { categoryNav } = navigation
   const navPreset = resolveAnimation('navFadeIn')
   const navTransition = getMotionTransition(navPreset)
@@ -74,6 +63,7 @@ export function CategoryNav({
           <button
             key={category.id}
             type="button"
+            className={getActiveTextGlowClassName(isSelected)}
             onClick={() => onSelect(category.id)}
             style={{
               fontWeight: isSelected

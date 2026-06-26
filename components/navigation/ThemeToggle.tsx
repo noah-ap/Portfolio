@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
+import { getActiveTextGlowClassName } from '@/lib/styles/glowStyles'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import type { BreakpointsConfig } from '@/lib/types/breakpoints'
 import type { NavigationConfig } from '@/lib/types/navigation'
 import type { ResolvedTheme, ThemePresetName } from '@/lib/types/theme'
@@ -18,18 +19,6 @@ interface ThemeToggleProps {
 }
 
 const PRESETS: ThemePresetName[] = ['dark', 'grey', 'light']
-
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1920
-  )
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  return width
-}
 
 function pickResponsive(
   values: { sm: number; md: number; lg: number },
@@ -48,7 +37,7 @@ export function ThemeToggle({
   activePreset,
   onChange,
 }: ThemeToggleProps) {
-  const width = useWindowWidth()
+  const width = useViewportWidth()
   const { themeToggle } = navigation
   const navPreset = resolveAnimation('navFadeIn')
   const navTransition = getMotionTransition(navPreset)
@@ -74,6 +63,7 @@ export function ThemeToggle({
           <button
             key={preset}
             type="button"
+            className={getActiveTextGlowClassName(isActive)}
             onClick={() => onChange(preset)}
             style={{
               padding: `${padding * 0.75}px ${padding}px`,

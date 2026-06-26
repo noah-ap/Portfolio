@@ -28,6 +28,8 @@ export function resolveThemeToken(
     'indicator.inactive': colors.indicator.inactive,
     'overlay.from': colors.overlay.from,
     'overlay.to': colors.overlay.to,
+    'glow.active': colors.glow.active,
+    'glow.activeBright': colors.glow.activeBright,
   }
 
   return map[token] ?? token

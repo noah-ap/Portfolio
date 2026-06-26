@@ -7,7 +7,7 @@ import { getMotionTransition } from '@/lib/animations/resolveMotion'
 import {
   calculateCylinderX,
   calculateCylinderZ,
-  calculateDepthOpacity,
+  calculateAngularDistanceOpacity,
   calculateDepthScale,
   getResponsiveRadius,
   getTargetRotation,
@@ -20,6 +20,7 @@ import type { ResolvedTheme } from '@/lib/types/theme'
 import type { SpacingConfig } from '@/lib/types/spacing'
 import type { TabsConfig } from '@/lib/types/tabs'
 import { useBreakpointScale } from '@/lib/hooks/useBreakpointScale'
+import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import { ProjectTab } from '../ProjectTab'
 
 interface CylinderCarouselProps {
@@ -39,18 +40,6 @@ interface CylinderCarouselProps {
   onRotationChange: (rotation: number) => void
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1920
-  )
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  return width
-}
-
 export function CylinderCarousel({
   projects,
   activeIndex,
@@ -67,7 +56,7 @@ export function CylinderCarousel({
   onSelectActive,
   onRotationChange,
 }: CylinderCarouselProps) {
-  const width = useWindowWidth()
+  const width = useViewportWidth()
   const tabScale = useBreakpointScale(breakpoints)
   const rotatePreset = resolveAnimation(cylinder.rotation.animation)
   const expandPreset = resolveAnimation('expandCollapse')
@@ -145,10 +134,13 @@ export function CylinderCarousel({
           1,
           cylinder.depth.scaleRange
         ),
-        opacity: calculateDepthOpacity(
-          z,
-          responsiveRadius,
-          cylinder.depth.minOpacity
+        opacity: calculateAngularDistanceOpacity(
+          index,
+          projects.length,
+          currentRotation,
+          cylinder.opacity.active,
+          cylinder.opacity.min,
+          cylinder.opacity.falloffPerStep
         ),
       }
     })
@@ -158,6 +150,7 @@ export function CylinderCarousel({
     responsiveRadius,
     responsiveHorizontalRadius,
     cylinder.depth,
+    cylinder.opacity,
   ])
 
   return (
@@ -202,11 +195,29 @@ export function CylinderCarousel({
             >
               <motion.div
                 style={{
-                  transform: `translate3d(calc(-50% + ${values.x}px), -50%, ${values.z}px) scale(${tabScale})`,
-                  opacity: values.opacity,
+                  transform: `translate3d(calc(-50% + ${values.x}px), -50%, ${values.z}px)`,
+                  opacity: isExiting ? undefined : values.opacity,
                 }}
-                animate={{ opacity: isExiting ? 0 : values.opacity }}
-                transition={getMotionTransition(resolveAnimation('categorySpin'))}
+                animate={
+                  isExiting
+                    ? { opacity: 0 }
+                    : cylinder.opacity.transitionDuration > 0
+                      ? { opacity: values.opacity }
+                      : undefined
+                }
+                transition={
+                  isExiting
+                    ? getMotionTransition(resolveAnimation('categorySpin'))
+                    : cylinder.opacity.transitionDuration > 0
+                      ? {
+                          ...getMotionTransition(
+                            resolveAnimation('cylinderRotate')
+                          ),
+                          duration:
+                            cylinder.opacity.transitionDuration / 1000,
+                        }
+                      : undefined
+                }
               >
                 <ProjectTab
                   project={project}

@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
 import {
   calculateCylinderX,
   calculateCylinderZ,
-  calculateDepthOpacity,
+  calculateAngularDistanceOpacity,
   getResponsiveRadius,
 } from '@/lib/layout/cylinderMath'
 import type { BreakpointsConfig } from '@/lib/types/breakpoints'
@@ -18,6 +18,7 @@ import type { SpacingConfig } from '@/lib/types/spacing'
 import type { TabsConfig } from '@/lib/types/tabs'
 import type { ResolvedAnimationPreset } from '@/lib/types/animations'
 import { useBreakpointScale } from '@/lib/hooks/useBreakpointScale'
+import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import { ProjectTab } from '../ProjectTab'
 
 interface ReflectionLayerProps {
@@ -34,18 +35,6 @@ interface ReflectionLayerProps {
   groupKey: string
 }
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1920
-  )
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  return width
-}
-
 export function ReflectionLayer({
   projects,
   activeIndex,
@@ -59,7 +48,7 @@ export function ReflectionLayer({
   isExpanded,
   groupKey,
 }: ReflectionLayerProps) {
-  const width = useWindowWidth()
+  const width = useViewportWidth()
   const tabScale = useBreakpointScale(breakpoints)
   const expandPreset = resolveAnimation('expandCollapse')
   const expandTransition = getMotionTransition(expandPreset)
@@ -137,10 +126,13 @@ export function ReflectionLayer({
               responsiveHorizontalRadius,
               currentRotation
             )
-            const opacity = calculateDepthOpacity(
-              z,
-              responsiveRadius,
-              cylinder.depth.minOpacity
+            const opacity = calculateAngularDistanceOpacity(
+              index,
+              projects.length,
+              currentRotation,
+              cylinder.opacity.active,
+              cylinder.opacity.min,
+              cylinder.opacity.falloffPerStep
             )
             const isActive = index === activeIndex
             const normalizedZ = (z + responsiveRadius) / (2 * responsiveRadius)
@@ -153,7 +145,7 @@ export function ReflectionLayer({
                 style={{
                   left: 0,
                   top: 0,
-                  transform: `translate3d(calc(-50% + ${x}px), ${cylinder.reflection.offsetY + z * cylinder.reflection.zScale}px, ${z}px) scale(${tabScale}) scaleY(-1)`,
+                  transform: `translate3d(calc(-50% + ${x}px), ${cylinder.reflection.offsetY + z * cylinder.reflection.zScale}px, ${z}px) scaleY(-1)`,
                   opacity: Math.max(
                     0,
                     opacity * cylinder.reflection.opacityMultiplier

@@ -11,7 +11,10 @@ export interface NavigationConfig {
     size: number
     activeHeight: number
     gap: number
-    position: { left: ResponsiveOffset }
+    position: {
+      side: 'left' | 'right'
+      offset: ResponsiveOffset
+    }
     colors: {
       active: string
       inactive: string
