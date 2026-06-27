@@ -3,10 +3,15 @@
 import { motion } from 'framer-motion'
 import { getActiveTextGlowClassName } from '@/lib/styles/glowStyles'
 import { getNavItemStyle } from '@/lib/styles/navItemStyles'
+import {
+  getCategoryNavContainerStyle,
+  getCategoryNavItemStyle,
+} from '@/lib/styles/categoryNavStyles'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { resolveCategoryNavLayout } from '@/lib/layout/resolveCategoryNavLayout'
 import { pickResponsive } from '@/lib/layout/pickResponsive'
-import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
+import { useViewportLayout } from '@/lib/hooks/useViewportLayout'
 import type { Category } from '@/lib/types/category'
 import type { BreakpointsConfig } from '@/lib/types/breakpoints'
 import type { NavigationConfig } from '@/lib/types/navigation'
@@ -29,21 +34,32 @@ export function CategoryNav({
   resolvedTheme,
   onSelect,
 }: CategoryNavProps) {
-  const width = useViewportWidth()
+  const { width, isPortrait } = useViewportLayout()
   const { categoryNav } = navigation
   const navPreset = resolveAnimation('navFadeIn')
   const navTransition = getMotionTransition(navPreset)
 
   if (!categoryNav.enabled) return null
 
-  const left = pickResponsive(categoryNav.position.left, width, breakpoints)
-  const gap = pickResponsive(categoryNav.gap, width, breakpoints)
+  const layoutMode = resolveCategoryNavLayout(
+    width,
+    isPortrait,
+    categoryNav,
+    breakpoints
+  )
   const fontSize = pickResponsive(categoryNav.fontSize, width, breakpoints)
+  const isHorizontal = layoutMode === 'horizontal-bottom'
 
   return (
-    <motion.div
-      className="absolute top-1/2 -translate-y-1/2 z-30 flex flex-col"
-      style={{ left, gap }}
+    <motion.nav
+      aria-label="Project categories"
+      className={isHorizontal ? 'select-none [&::-webkit-scrollbar]:hidden' : undefined}
+      style={getCategoryNavContainerStyle(
+        layoutMode,
+        categoryNav,
+        width,
+        breakpoints
+      )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={navTransition}
@@ -58,13 +74,18 @@ export function CategoryNav({
             onClick={() => onSelect(category.id)}
             style={{
               ...getNavItemStyle(categoryNav, resolvedTheme, isSelected, fontSize),
-              textAlign: 'left',
+              ...getCategoryNavItemStyle(
+                layoutMode,
+                categoryNav,
+                width,
+                breakpoints
+              ),
             }}
           >
             {category.name}
           </button>
         )
       })}
-    </motion.div>
+    </motion.nav>
   )
 }

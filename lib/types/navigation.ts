@@ -4,6 +4,8 @@ export interface ResponsiveOffset {
   lg: number
 }
 
+export type CategoryNavLayoutMode = 'vertical-left' | 'horizontal-bottom'
+
 export interface NavigationConfig {
   indicators: {
     enabled: boolean
@@ -23,7 +25,6 @@ export interface NavigationConfig {
   }
   categoryNav: {
     enabled: boolean
-    position: { left: ResponsiveOffset }
     gap: ResponsiveOffset
     fontSize: ResponsiveOffset
     selectedOpacity: number
@@ -33,6 +34,28 @@ export interface NavigationConfig {
     colors: {
       active: string
       inactive: string
+    }
+    layout: {
+      switch: {
+        portrait: CategoryNavLayoutMode
+        landscape: CategoryNavLayoutMode
+        narrow: CategoryNavLayoutMode
+        /** Width below which `narrow` layout applies (defaults to `breakpoints.md`) */
+        narrowMaxWidth?: number
+      }
+      vertical: {
+        position: { left: ResponsiveOffset }
+      }
+      horizontal: {
+        anchor: 'viewport' | 'container'
+        bottom: ResponsiveOffset
+        paddingX: ResponsiveOffset
+        paddingY: ResponsiveOffset
+        gap: ResponsiveOffset
+        itemPaddingX: ResponsiveOffset
+        justify: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around'
+        touchMinHeight: number
+      }
     }
   }
   themeToggle: {

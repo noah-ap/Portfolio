@@ -862,13 +862,34 @@ Defines the entire interactive feel of `/portfolio`. Content pages inherit `body
 | Property                    | Description                            |
 |-----------------------------|----------------------------------------|
 | `enabled`                   | Show/hide category nav                 |
-| `position.left`             | Responsive left offset                 |
 | `gap`, `fontSize`           | Responsive spacing and type size       |
 | `selectedOpacity`           | Active label opacity (0–1)             |
 | `unselectedOpacity`         | Inactive label opacity (0–1)           |
 | `selectedWeight`            | Active font weight                     |
 | `unselectedWeight`          | Inactive font weight                   |
 | `colors.active/inactive`    | Theme tokens for label color           |
+| `layout.switch`             | Layout rules: `portrait`, `landscape`, `narrow`, optional `narrowMaxWidth` |
+| `layout.vertical`           | Left vertical nav (`position.left`)    |
+| `layout.horizontal`         | Bottom bar (`anchor`, `bottom`, padding, gap, touch targets) |
+
+**Layout resolution:** Portrait or width below `narrowMaxWidth` (defaults to `breakpoints.md`) uses `horizontal-bottom` — fixed bottom bar, horizontal scroll if needed. Landscape on wider screens uses `vertical-left` (current desktop behavior).
+
+```ts
+layout: {
+  switch: {
+    portrait: 'horizontal-bottom',
+    landscape: 'vertical-left',
+    narrow: 'horizontal-bottom',
+  },
+  vertical: { position: { left: { sm: 48, md: 64, lg: 96 } } },
+  horizontal: {
+    anchor: 'viewport',
+    bottom: { sm: 12, md: 16, lg: 16 },
+    justify: 'center',
+    touchMinHeight: 44,
+  },
+},
+```
 
 ##### `themeToggle`
 

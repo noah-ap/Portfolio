@@ -19,7 +19,6 @@ export const navigation: NavigationConfig = {
   },
   categoryNav: {
     enabled: true,
-    position: { left: { sm: 48, md: 64, lg: 96 } },
     gap: { sm: 12, md: 16, lg: 16 },
     fontSize: { sm: 14, md: 16, lg: 18 },
     selectedOpacity: 1,
@@ -29,6 +28,26 @@ export const navigation: NavigationConfig = {
     colors: {
       active: 'text.secondary',
       inactive: 'text.muted',
+    },
+    layout: {
+      switch: {
+        portrait: 'horizontal-bottom',
+        landscape: 'vertical-left',
+        narrow: 'horizontal-bottom',
+      },
+      vertical: {
+        position: { left: { sm: 48, md: 64, lg: 96 } },
+      },
+      horizontal: {
+        anchor: 'viewport',
+        bottom: { sm: 12, md: 16, lg: 16 },
+        paddingX: { sm: 16, md: 24, lg: 32 },
+        paddingY: { sm: 10, md: 12, lg: 12 },
+        gap: { sm: 16, md: 20, lg: 28 },
+        itemPaddingX: { sm: 8, md: 10, lg: 12 },
+        justify: 'center',
+        touchMinHeight: 44,
+      },
     },
   },
   themeToggle: {
