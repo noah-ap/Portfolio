@@ -14,6 +14,7 @@ import {
   getTabSubtitleOverlayStyle,
   getTabTitleOverlayStyle,
 } from '@/lib/styles/tabStyles'
+import { getActiveCardGlowClassName } from '@/lib/styles/glowStyles'
 
 interface ProjectTabProps {
   project: Project
@@ -44,7 +45,9 @@ export function ProjectTab({
       style={getTabButtonResetStyle()}
     >
       <div
-        className="project-tab-inner"
+        className={['project-tab-inner', getActiveCardGlowClassName(isActive)]
+          .filter(Boolean)
+          .join(' ')}
         style={getTabInnerStyle(tabs, theme, isActive, hoverPreset)}
       >
         <div style={getTabCardStyle(tabs, theme, isActive)}>

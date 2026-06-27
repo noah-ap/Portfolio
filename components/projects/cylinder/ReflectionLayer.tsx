@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
+import { getCategoryTransitionMotion } from '@/lib/animations/categoryTransition'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
 import {
   calculateCylinderX,
@@ -32,7 +33,9 @@ interface ReflectionLayerProps {
   spacing: SpacingConfig
   hoverPreset: ResolvedAnimationPreset
   isExpanded: boolean
+  isExiting: boolean
   groupKey: string
+  categoryTransition: ResolvedAnimationPreset
 }
 
 export function ReflectionLayer({
@@ -46,7 +49,9 @@ export function ReflectionLayer({
   spacing,
   hoverPreset,
   isExpanded,
+  isExiting,
   groupKey,
+  categoryTransition,
 }: ReflectionLayerProps) {
   const width = useViewportWidth()
   const tabScale = useBreakpointScale(breakpoints)
@@ -134,28 +139,49 @@ export function ReflectionLayer({
               cylinder.opacity.min,
               cylinder.opacity.falloffPerStep
             )
+            const reflectionOpacity = Math.max(
+              0,
+              opacity * cylinder.reflection.opacityMultiplier
+            )
             const isActive = index === activeIndex
             const normalizedZ = (z + responsiveRadius) / (2 * responsiveRadius)
             const brightness = 0.6 + normalizedZ * 0.4
 
             return (
-              <div
+              <motion.div
                 key={`reflection-${groupKey}-${project.id}`}
                 className="absolute pointer-events-none overflow-hidden"
                 style={{
                   left: 0,
                   top: 0,
                   transform: `translate3d(calc(-50% + ${x}px), ${cylinder.reflection.offsetY + z * cylinder.reflection.zScale}px, ${z}px) scaleY(-1)`,
-                  opacity: Math.max(
-                    0,
-                    opacity * cylinder.reflection.opacityMultiplier
-                  ),
+                  opacity: isExiting ? undefined : reflectionOpacity,
                   transformStyle: 'preserve-3d',
                   filter: `blur(${cylinder.reflection.blur}px) brightness(${brightness})`,
                   borderRadius: tabs.card.borderRadius,
                   WebkitMaskImage: cylinder.reflection.maskGradient,
                   maskImage: cylinder.reflection.maskGradient,
                 }}
+                animate={
+                  isExiting
+                    ? { opacity: 0 }
+                    : cylinder.opacity.transitionDuration > 0
+                      ? { opacity: reflectionOpacity }
+                      : undefined
+                }
+                transition={
+                  isExiting
+                    ? getCategoryTransitionMotion(categoryTransition)
+                    : cylinder.opacity.transitionDuration > 0
+                      ? {
+                          ...getMotionTransition(
+                            resolveAnimation('cylinderRotate')
+                          ),
+                          duration:
+                            cylinder.opacity.transitionDuration / 1000,
+                        }
+                      : undefined
+                }
               >
                 <ProjectTab
                   project={project}
@@ -166,7 +192,7 @@ export function ReflectionLayer({
                   hoverPreset={hoverPreset}
                   onSelect={() => {}}
                 />
-              </div>
+              </motion.div>
             )
           })}
         </div>

@@ -44,5 +44,11 @@ export type {
   ResolvedScene,
 } from './scene'
 export type { NavigationConfig, ResponsiveOffset } from './navigation'
+export type { PageDefinition, PagesConfig } from './pages'
+export type { SiteNavConfig } from './siteNav'
+export type { AboutConfig, AboutSection } from './about'
+export type { ContactConfig, ContactLink } from './contact'
+export type { ContentPagesConfig } from './contentPages'
+export type { GlassConfig, GlassPresetName, GlassSurfaceConfig, ResolvedGlass } from './glass'
 export type { SpacingConfig } from './spacing'
 export type { BreakpointsConfig } from './breakpoints'

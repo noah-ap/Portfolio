@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Portfolio — Projects',
-  description: 'Config-driven project showcase',
+  title: 'Portfolio',
+  description: 'Config-driven portfolio showcase',
 }
 
 export const viewport: Viewport = {

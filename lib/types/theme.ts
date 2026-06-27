@@ -27,6 +27,7 @@ export interface GlowEffectConfig {
   spread: number
   transitionMs: number
   text: GlowTextConfig
+  card: GlowTextConfig
   pulse: GlowPulseConfig
 }
 

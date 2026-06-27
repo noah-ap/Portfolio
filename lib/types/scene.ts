@@ -1,6 +1,6 @@
 import type { AnimationPresetName } from '@/lib/types/animations'
 
-export type ScenePresetName = 'noahDarkRoom' | 'minimal'
+export type ScenePresetName = 'noahDarkRoom' | 'fogOnly' | 'minimal'
 
 export interface SceneLayer {
   type: 'fog' | 'floor'

@@ -1,10 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
 import { getActiveTextGlowClassName } from '@/lib/styles/glowStyles'
+import { getNavItemStyle } from '@/lib/styles/navItemStyles'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { pickResponsive } from '@/lib/layout/pickResponsive'
 import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import type { Category } from '@/lib/types/category'
 import type { BreakpointsConfig } from '@/lib/types/breakpoints'
@@ -18,16 +19,6 @@ interface CategoryNavProps {
   breakpoints: BreakpointsConfig
   resolvedTheme: ResolvedTheme
   onSelect: (categoryId: string) => void
-}
-
-function pickResponsive(
-  values: { sm: number; md: number; lg: number },
-  width: number,
-  breakpoints: BreakpointsConfig
-) {
-  if (width < breakpoints.sm) return values.sm
-  if (width < breakpoints.md) return values.md
-  return values.lg
 }
 
 export function CategoryNav({
@@ -66,22 +57,8 @@ export function CategoryNav({
             className={getActiveTextGlowClassName(isSelected)}
             onClick={() => onSelect(category.id)}
             style={{
-              fontWeight: isSelected
-                ? categoryNav.selectedWeight
-                : categoryNav.unselectedWeight,
-              fontSize,
-              opacity: isSelected
-                ? categoryNav.selectedOpacity
-                : categoryNav.unselectedOpacity,
-              color: resolveThemeToken(
-                isSelected ? 'text.secondary' : 'text.muted',
-                resolvedTheme
-              ),
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
+              ...getNavItemStyle(categoryNav, resolvedTheme, isSelected, fontSize),
               textAlign: 'left',
-              userSelect: 'none',
             }}
           >
             {category.name}

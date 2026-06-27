@@ -22,7 +22,13 @@ export function ScrollProvider({ config, children }: ScrollProviderProps) {
 
   return (
     <ScrollContext.Provider value={{ config }}>
-      <div style={getScrollContainerStyle(config.smoothScrolling)}>
+      <div
+        style={{
+          ...getScrollContainerStyle(config.smoothScrolling),
+          height: '100%',
+          minHeight: 0,
+        }}
+      >
         {children}
       </div>
     </ScrollContext.Provider>

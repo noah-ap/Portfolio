@@ -10,7 +10,11 @@ interface ProjectViewProps {
 
 export function ProjectView({ config }: ProjectViewProps) {
   if (config.layout.mode === 'cylinder') {
-    return <CylinderPortfolio config={config} />
+    return (
+      <div className="h-screen w-full">
+        <CylinderPortfolio config={config} />
+      </div>
+    )
   }
 
   return (

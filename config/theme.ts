@@ -9,14 +9,20 @@ const sharedTypography = {
 export const theme: ThemeConfig = {
   preset: 'dark',
   glow: {
-    blur: 14,
-    spread: 1,
+    blur: 3,
+    spread: 0,
     transitionMs: 300,
     text: {
+      blurMin: 2,
+      spreadMin: 4,
+      blurMax: 4,
+      spreadMax: 8,
+    },
+    card: {
       blurMin: 4,
-      spreadMin: 10,
-      blurMax: 10,
-      spreadMax: 22,
+      spreadMin: 0,
+      blurMax: 4,
+      spreadMax: 4,
     },
     pulse: {
       durationMs: 2800,
@@ -46,8 +52,8 @@ export const theme: ThemeConfig = {
           to: 'transparent',
         },
         glow: {
-          active: 'rgba(255, 255, 255, 0.35)',
-          activeBright: 'rgba(255, 255, 255, 0.6)',
+          active: 'rgba(200, 205, 225, 0.18)',
+          activeBright: 'rgba(220, 225, 245, 0.28)',
         },
       },
       floor: {
@@ -87,8 +93,8 @@ export const theme: ThemeConfig = {
           to: 'transparent',
         },
         glow: {
-          active: 'rgba(243, 244, 246, 0.35)',
-          activeBright: 'rgba(243, 244, 246, 0.6)',
+          active: 'rgba(190, 195, 210, 0.18)',
+          activeBright: 'rgba(210, 215, 230, 0.28)',
         },
       },
       floor: {
@@ -128,8 +134,8 @@ export const theme: ThemeConfig = {
           to: 'transparent',
         },
         glow: {
-          active: 'rgba(17, 24, 39, 0.25)',
-          activeBright: 'rgba(17, 24, 39, 0.45)',
+          active: 'rgba(100, 105, 120, 0.15)',
+          activeBright: 'rgba(120, 125, 140, 0.25)',
         },
       },
       floor: {

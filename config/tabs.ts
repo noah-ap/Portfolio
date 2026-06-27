@@ -25,23 +25,23 @@ export const tabs: TabsConfig = {
     scale: 1,
   },
   depthOpacity: { active: 1 },
-  title: { fontSize: 20, fontWeight: 300, padding: 16 },
-  subtitle: { fontSize: 14, fontWeight: 300 },
+  title: { fontSize: 20, fontWeight: 300, padding: 16, color: '#ffffff' },
+  subtitle: { fontSize: 14, fontWeight: 300, color: '#ffffff' },
   image: {
     objectFit: 'cover',
     objectPosition: 'center',
     activeBrightness: 1.1,
   },
   border: {
-    activeWidth: 2,
-    inactiveWidth: 1,
+    activeWidth: 1,
+    inactiveWidth: 0.5,
     activeColor: 'ring.active',
     inactiveColor: 'ring.inactive',
   },
   placeholder: {
     gradientFrom: 'surface.muted',
     gradientTo: 'surface.dark',
-    textColor: 'text.muted',
+    textColor: '#ffffff',
     fontSize: 18,
   },
 }

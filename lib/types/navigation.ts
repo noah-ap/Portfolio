@@ -30,10 +30,15 @@ export interface NavigationConfig {
     unselectedOpacity: number
     selectedWeight: number
     unselectedWeight: number
+    colors: {
+      active: string
+      inactive: string
+    }
   }
   themeToggle: {
     enabled: boolean
     position: {
+      anchor: 'viewport' | 'container'
       left: ResponsiveOffset
       bottom: ResponsiveOffset
     }
@@ -42,4 +47,11 @@ export interface NavigationConfig {
     padding: ResponsiveOffset
   }
   keyboard: { enabled: boolean }
+  categoryTransition: {
+    animation: string
+    tabScroll: {
+      enabled: boolean
+      stepDurationMs: number
+    }
+  }
 }

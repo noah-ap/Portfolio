@@ -31,8 +31,8 @@ export interface TabsConfig {
     scale: number
   }
   depthOpacity: { active: number }
-  title: { fontSize: number; fontWeight: number; padding: number }
-  subtitle: { fontSize: number; fontWeight: number }
+  title: { fontSize: number; fontWeight: number; padding: number; color: string }
+  subtitle: { fontSize: number; fontWeight: number; color: string }
   image: {
     objectFit: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
     objectPosition: string

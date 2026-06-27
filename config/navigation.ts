@@ -8,7 +8,7 @@ export const navigation: NavigationConfig = {
     activeHeight: 32,
     gap: 8,
     position: {
-      side: 'right',
+      side: 'left',
       offset: { sm: 12, md: 16, lg: 32 },
     },
     colors: {
@@ -26,10 +26,15 @@ export const navigation: NavigationConfig = {
     unselectedOpacity: 0.5,
     selectedWeight: 400,
     unselectedWeight: 300,
+    colors: {
+      active: 'text.secondary',
+      inactive: 'text.muted',
+    },
   },
   themeToggle: {
     enabled: true,
     position: {
+      anchor: 'viewport',
       left: { sm: 12, md: 16, lg: 32 },
       bottom: { sm: 12, md: 16, lg: 32 },
     },
@@ -38,4 +43,11 @@ export const navigation: NavigationConfig = {
     padding: { sm: 6, md: 8, lg: 8 },
   },
   keyboard: { enabled: true },
+  categoryTransition: {
+    animation: 'categorySpin',
+    tabScroll: {
+      enabled: true,
+      stepDurationMs: 180,
+    },
+  },
 }

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
+import { getCategoryTransitionMotion } from '@/lib/animations/categoryTransition'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
 import {
   calculateCylinderX,
@@ -35,6 +36,7 @@ interface CylinderCarouselProps {
   isExpanded: boolean
   isExiting: boolean
   groupKey: string
+  categoryTransition: ResolvedAnimationPreset
   onSelect: (index: number) => void
   onSelectActive: () => void
   onRotationChange: (rotation: number) => void
@@ -52,6 +54,7 @@ export function CylinderCarousel({
   isExpanded,
   isExiting,
   groupKey,
+  categoryTransition,
   onSelect,
   onSelectActive,
   onRotationChange,
@@ -96,7 +99,6 @@ export function CylinderCarousel({
   useEffect(() => {
     const target = getTargetRotation(activeIndex, projects.length)
     rotation.set(target)
-    setCurrentRotation(target)
   }, [activeIndex, projects.length, rotation])
 
   useEffect(() => {
@@ -207,7 +209,7 @@ export function CylinderCarousel({
                 }
                 transition={
                   isExiting
-                    ? getMotionTransition(resolveAnimation('categorySpin'))
+                    ? getCategoryTransitionMotion(categoryTransition)
                     : cylinder.opacity.transitionDuration > 0
                       ? {
                           ...getMotionTransition(

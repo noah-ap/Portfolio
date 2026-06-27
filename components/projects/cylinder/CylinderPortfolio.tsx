@@ -2,16 +2,15 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
-import { resolveTheme } from '@/lib/config/resolveTheme'
 import { getProjectsForCategory } from '@/lib/config/siteConfig'
-import { themeToCssVars, themeVarsToStyleBlock } from '@/lib/config/themeVars'
+import { getCategoryTransitionDuration } from '@/lib/animations/categoryTransition'
+import { useCategoryTabScroll } from '@/lib/hooks/useCategoryTabScroll'
 import { useConsoleNavigation } from '@/lib/hooks/useConsoleNavigation'
-import { useThemePreset } from '@/lib/hooks/useThemePreset'
+import { useSiteTheme } from '@/lib/hooks/themeContext'
 import type { SiteConfig } from '@/lib/config/siteConfig'
 import type { AnimationPresetName } from '@/lib/types/animations'
 import { Scene } from '@/components/scene/Scene'
 import { CategoryNav } from '@/components/navigation/CategoryNav'
-import { ThemeToggle } from '@/components/navigation/ThemeToggle'
 import { VerticalIndicators } from '@/components/navigation/VerticalIndicators'
 import { CylinderCarousel } from './CylinderCarousel'
 import { ExpandedDetail } from './ExpandedDetail'
@@ -22,11 +21,7 @@ interface CylinderPortfolioProps {
 }
 
 export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
-  const [themePreset, setThemePreset] = useThemePreset(config.theme.preset)
-  const resolvedTheme = useMemo(
-    () => resolveTheme(themePreset),
-    [themePreset]
-  )
+  const { resolvedTheme } = useSiteTheme()
 
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     config.categories[0]?.id ?? ''
@@ -50,21 +45,33 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
   const hoverPreset = resolveAnimation(
     config.tabs.hover.animation as AnimationPresetName
   )
+  const categoryTransition = useMemo(
+    () =>
+      resolveAnimation(
+        config.navigation.categoryTransition.animation as AnimationPresetName
+      ),
+    [config.navigation.categoryTransition.animation]
+  )
 
   const handleCategorySelect = useCallback(
     (categoryId: string) => {
       if (categoryId === selectedCategoryId) return
       setIsExiting(true)
-      const spinPreset = resolveAnimation('categorySpin')
       setTimeout(() => {
         setSelectedCategoryId(categoryId)
-        setActiveIndex(0)
         setIsExpanded(false)
         setIsExiting(false)
-      }, spinPreset.duration)
+      }, getCategoryTransitionDuration(categoryTransition))
     },
-    [selectedCategoryId]
+    [selectedCategoryId, categoryTransition]
   )
+
+  useCategoryTabScroll({
+    categoryId: selectedCategoryId,
+    projectCount: categoryProjects.length,
+    tabScroll: config.navigation.categoryTransition.tabScroll,
+    setActiveIndex,
+  })
 
   const handleRotateNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % categoryProjects.length)
@@ -105,16 +112,10 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
   })
 
   return (
-    <>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: themeVarsToStyleBlock(themeToCssVars(resolvedTheme)),
-        }}
-      />
-      <div
-        className="relative w-full h-screen overflow-visible"
-        style={{ backgroundColor: resolvedTheme.colors.background }}
-      >
+    <div
+      className="relative w-full h-screen overflow-visible"
+      style={{ backgroundColor: resolvedTheme.colors.background }}
+    >
         <Scene
           scene={config.scene}
           cylinder={config.cylinder}
@@ -133,7 +134,9 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
           spacing={config.spacing}
           hoverPreset={hoverPreset}
           isExpanded={isExpanded}
+          isExiting={isExiting}
           groupKey={selectedCategoryId}
+          categoryTransition={categoryTransition}
         />
 
         <div
@@ -152,6 +155,7 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
             isExpanded={isExpanded}
             isExiting={isExiting}
             groupKey={selectedCategoryId}
+            categoryTransition={categoryTransition}
             onSelect={setActiveIndex}
             onSelectActive={handleExpand}
             onRotationChange={setCurrentRotation}
@@ -164,6 +168,8 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
           navigation={config.navigation}
           breakpoints={config.breakpoints}
           resolvedTheme={resolvedTheme}
+          isExiting={isExiting}
+          groupKey={selectedCategoryId}
           onSelect={setActiveIndex}
         />
 
@@ -176,14 +182,6 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
           onSelect={handleCategorySelect}
         />
 
-        <ThemeToggle
-          navigation={config.navigation}
-          breakpoints={config.breakpoints}
-          resolvedTheme={resolvedTheme}
-          activePreset={themePreset}
-          onChange={setThemePreset}
-        />
-
         {activeProject && (
           <ExpandedDetail
             project={activeProject}
@@ -194,6 +192,5 @@ export function CylinderPortfolio({ config }: CylinderPortfolioProps) {
           />
         )}
       </div>
-    </>
   )
 }

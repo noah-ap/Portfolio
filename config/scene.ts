@@ -9,6 +9,9 @@ export const scene: SceneConfig = {
         { type: 'floor', zIndex: 1 },
       ],
     },
+    fogOnly: {
+      layers: [{ type: 'fog', animation: 'fogEntrance', zIndex: 0 }],
+    },
     minimal: {
       layers: [{ type: 'floor', zIndex: 0 }],
     },

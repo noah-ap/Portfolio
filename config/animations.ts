@@ -45,11 +45,13 @@ export const animations: AnimationsConfig = {
       translateY: [-150, 0],
     },
     categorySpin: {
-      duration: 900,
+      duration: 400,
       easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
       opacity: [1, 0],
-      opacityDelay: 400,
-      opacityDuration: 500,
+      opacityDelay: 0,
+      opacityDuration: 400,
+      delay: 20,
+      scale: 0.8,
     },
     fogEntrance: {
       duration: 1500,

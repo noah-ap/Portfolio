@@ -33,6 +33,10 @@ button:focus-visible {
   animation: active-text-glow-pulse var(--glow-pulse-duration) var(--glow-pulse-easing) infinite;
 }
 
+.active-card-glow {
+  animation: active-card-glow-pulse var(--glow-pulse-duration) var(--glow-pulse-easing) infinite;
+}
+
 @keyframes active-text-glow-pulse {
   0%,
   100% {
@@ -40,6 +44,16 @@ button:focus-visible {
   }
   50% {
     text-shadow: var(--glow-text-shadow-max);
+  }
+}
+
+@keyframes active-card-glow-pulse {
+  0%,
+  100% {
+    box-shadow: var(--glow-card-shadow-min);
+  }
+  50% {
+    box-shadow: var(--glow-card-shadow-max);
   }
 }
 

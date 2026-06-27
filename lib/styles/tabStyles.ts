@@ -6,7 +6,6 @@ import type { NavigationConfig } from '@/lib/types/navigation'
 import type { SpacingConfig } from '@/lib/types/spacing'
 import type { TabsConfig, ResponsiveSize } from '@/lib/types/tabs'
 import type { ResolvedTheme } from '@/lib/types/theme'
-import { getActiveGlowStyle } from '@/lib/styles/glowStyles'
 
 function toClamp(size: ResponsiveSize): string {
   return `clamp(${size.min}px, ${size.preferredVw}vw, ${size.max}px)`
@@ -47,7 +46,6 @@ export function getTabInnerStyle(
   hoverPreset: ResolvedAnimationPreset
 ): CSSProperties {
   const scale = isActive ? tabs.active.scale : tabs.default.scale
-  const { boxShadow } = getActiveGlowStyle(theme, isActive)
 
   return {
     ['--tab-scale' as string]: scale,
@@ -57,9 +55,8 @@ export function getTabInnerStyle(
     width: '100%',
     height: '100%',
     transform: `scale(${scale})`,
-    transition: `transform var(--tab-transition), box-shadow ${theme.glow.transitionMs}ms ease`,
+    transition: 'transform var(--tab-transition)',
     borderRadius: tabs.card.borderRadius,
-    boxShadow,
   }
 }
 
@@ -108,7 +105,7 @@ export function getTabTitleOverlayStyle(
     right: 0,
     padding: title.padding,
     background: `linear-gradient(to top, ${resolveThemeToken('overlay.from', theme)}, ${resolveThemeToken('overlay.to', theme)})`,
-    color: resolveThemeToken('text.primary', theme),
+    color: resolveThemeToken(title.color, theme),
     fontSize: title.fontSize,
     fontWeight: title.fontWeight,
     userSelect: 'none',
@@ -121,7 +118,7 @@ export function getTabSubtitleOverlayStyle(
   spacing: { xs: number }
 ): CSSProperties {
   return {
-    color: resolveThemeToken('text.muted', theme),
+    color: resolveThemeToken(tabs.subtitle.color, theme),
     fontSize: tabs.subtitle.fontSize,
     fontWeight: tabs.subtitle.fontWeight,
     marginTop: spacing.xs,

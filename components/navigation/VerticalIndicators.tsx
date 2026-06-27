@@ -3,7 +3,13 @@
 import { motion } from 'framer-motion'
 import { resolveAnimation } from '@/lib/config/resolveAnimation'
 import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
+import {
+  getCategoryStaggerDelaySec,
+  getCategoryTransitionMotion,
+} from '@/lib/animations/categoryTransition'
 import { getMotionTransition } from '@/lib/animations/resolveMotion'
+import { pickResponsive } from '@/lib/layout/pickResponsive'
+import type { AnimationPresetName } from '@/lib/types/animations'
 import { useViewportWidth } from '@/lib/hooks/useViewportWidth'
 import type { NavigationConfig } from '@/lib/types/navigation'
 import type { Project } from '@/lib/types/project'
@@ -16,17 +22,9 @@ interface VerticalIndicatorsProps {
   navigation: NavigationConfig
   breakpoints: BreakpointsConfig
   resolvedTheme: ResolvedTheme
+  isExiting: boolean
+  groupKey: string
   onSelect: (index: number) => void
-}
-
-function pickResponsive(
-  values: { sm: number; md: number; lg: number },
-  width: number,
-  breakpoints: BreakpointsConfig
-) {
-  if (width < breakpoints.sm) return values.sm
-  if (width < breakpoints.md) return values.md
-  return values.lg
 }
 
 export function VerticalIndicators({
@@ -35,14 +33,19 @@ export function VerticalIndicators({
   navigation,
   breakpoints,
   resolvedTheme,
+  isExiting,
+  groupKey,
   onSelect,
 }: VerticalIndicatorsProps) {
   const width = useViewportWidth()
   const { indicators } = navigation
   const navPreset = resolveAnimation('navFadeIn')
-  const staggerPreset = resolveAnimation('indicatorStagger')
   const navTransition = getMotionTransition(navPreset)
-  const staggerTransition = getMotionTransition(staggerPreset)
+  const categoryTransition = resolveAnimation(
+    navigation.categoryTransition.animation as AnimationPresetName
+  )
+  const categoryMotion = getCategoryTransitionMotion(categoryTransition)
+  const categoryItemMotion = getMotionTransition(categoryTransition)
 
   if (!indicators.enabled) return null
 
@@ -54,15 +57,14 @@ export function VerticalIndicators({
   const activeHeight =
     width < breakpoints.sm ? indicators.activeHeight * 0.75 : indicators.activeHeight
 
-  const staggerDelaySec = (staggerPreset.delay ?? 0) / 1000
-
   return (
     <motion.div
+      key={groupKey}
       className="absolute top-1/2 -translate-y-1/2 flex flex-col z-30"
       style={{ ...edgePosition, gap }}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={navTransition}
+      animate={{ opacity: isExiting ? 0 : 1 }}
+      transition={isExiting ? categoryMotion : navTransition}
     >
       {projects.map((project, index) => {
         const isActive = index === activeIndex
@@ -86,7 +88,10 @@ export function VerticalIndicators({
               flexShrink: 0,
               outline: 'none',
             }}
-            initial={{ opacity: 0, scale: staggerPreset.scale ?? 0.8 }}
+            initial={{
+              opacity: 0,
+              scale: categoryTransition.scale ?? 0.8,
+            }}
             animate={{
               opacity: 1,
               scale: 1,
@@ -94,12 +99,12 @@ export function VerticalIndicators({
             }}
             transition={{
               opacity: {
-                ...staggerTransition,
-                delay: staggerDelaySec * index,
+                ...categoryItemMotion,
+                delay: getCategoryStaggerDelaySec(categoryTransition, index),
               },
               scale: {
-                ...staggerTransition,
-                delay: staggerDelaySec * index,
+                ...categoryItemMotion,
+                delay: getCategoryStaggerDelaySec(categoryTransition, index),
               },
               height: { duration: 0.2, ease: 'easeOut' },
             }}

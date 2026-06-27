@@ -1,15 +1,21 @@
 import {
   animations,
+  about,
   breakpoints,
   categories,
+  contact,
+  contentPages,
   cylinder,
   layout,
   navigation,
+  pages,
   projects,
+  siteNav,
   spacing,
   tabs,
   theme,
 } from '@/config'
+import { resolveGlass } from '@/lib/config/resolveGlass'
 import { resolveBackground } from '@/lib/config/resolveBackground'
 import { resolveScene } from '@/lib/config/resolveScene'
 import { resolveScroll } from '@/lib/config/resolveScroll'
@@ -18,6 +24,7 @@ import { themeToCssVars } from '@/lib/config/themeVars'
 import type { ResolvedBackground } from '@/lib/types/background'
 import type { ResolvedScene } from '@/lib/types/scene'
 import type { ResolvedScroll } from '@/lib/types/scroll'
+import type { ResolvedGlass } from '@/lib/types/glass'
 import type { ResolvedTheme } from '@/lib/types/theme'
 
 export interface SiteConfig {
@@ -34,6 +41,12 @@ export interface SiteConfig {
   scroll: ResolvedScroll
   background: ResolvedBackground
   navigation: typeof navigation
+  pages: typeof pages
+  siteNav: typeof siteNav
+  about: typeof about
+  contact: typeof contact
+  contentPages: typeof contentPages
+  glass: ResolvedGlass
   spacing: typeof spacing
   breakpoints: typeof breakpoints
 }
@@ -55,6 +68,12 @@ export function getSiteConfig(themePreset?: ResolvedTheme['presetName']): SiteCo
     scroll: resolveScroll(),
     background: resolveBackground(),
     navigation,
+    pages,
+    siteNav,
+    about,
+    contact,
+    contentPages,
+    glass: resolveGlass(contentPages.glass.preset),
     spacing,
     breakpoints,
   }
