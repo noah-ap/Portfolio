@@ -57,6 +57,21 @@ button:focus-visible {
   }
 }
 
+.active-tab-nav-glow {
+  animation: active-tab-nav-glow-pulse var(--glow-pulse-duration)
+    var(--glow-pulse-easing) infinite;
+}
+
+@keyframes active-tab-nav-glow-pulse {
+  0%,
+  100% {
+    box-shadow: var(--glow-text-shadow-min);
+  }
+  50% {
+    box-shadow: var(--glow-text-shadow-max);
+  }
+}
+
 .project-tab-inner {
   transform-origin: center center;
 }

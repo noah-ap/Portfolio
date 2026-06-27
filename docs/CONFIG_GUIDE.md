@@ -448,14 +448,25 @@ Populates the 3D carousel tabs, expanded detail overlay, and ground reflections.
 |               | `imageHeight`                   | CSS height for project image                          |
 | `gap`         | —                               | Gap between tabs in list mode (px)                    |
 | `hover`       | `scale`, `lift`, `animation`    | Hover transform and animation preset name             |
-| `active`      | `scale`, `animation`            | Active tab scale and animation                        |
+| `active`      | `scale`, `animation`, `brightness`, `brightnessAffectsImage` | Active tab scale, animation, and optional content brightness |
 | `default`     | `scale`                         | Base scale                                            |
 | `depthOpacity`| `active`                        | Opacity for depth layering                            |
 | `title`       | `fontSize`, `fontWeight`, `padding`, `color` | Overlay title styling              |
 | `subtitle`    | `fontSize`, `fontWeight`, `color` | Overlay subtitle styling                          |
 | `image`       | `objectFit`, `objectPosition`, `activeBrightness` | Image rendering               |
 | `border`      | `activeWidth`, `inactiveWidth`, `activeColor`, `inactiveColor` | Tab border |
+| `activeHighlight` | See below                         | Active tab emphasis style (`cardGlow` or `navStyle`) |
 | `placeholder` | `gradientFrom`, `gradientTo`, `textColor`, `fontSize` | No-image fallback |
+
+##### `activeHighlight`
+
+| Property | Description |
+|----------|-------------|
+| `mode` | `'cardGlow'` = theme card box-shadow glow; `'navStyle'` = white border + nav text-style glow |
+| `border.activeColor` | Override active border color in `navStyle` (use `'text.primary'` for white in dark / black in light) |
+| `border.activeWidth` | Override active border width in `navStyle` |
+| `glow.enabled` | Show glow around active tab |
+| `glow.pulse` | Pulse glow like nav bar text (`true`) or static min intensity (`false`) |
 
 #### Example
 
@@ -666,8 +677,9 @@ export const layout: LayoutConfig = {
 |-----------------|------------------------------------------|
 | `blur`, `spread`, `transitionMs` | Base glow properties          |
 | `text.blurMin/Max`, `text.spreadMin/Max` | Text glow pulse range    |
-| `card.blurMin/Max`, `card.spreadMin/Max` | Card glow pulse range    |
-| `pulse.durationMs`, `pulse.easing` | Glow pulse animation           |
+| `card.blurMin/Max`, `card.spreadMin/Max` | Card glow shadow range    |
+| `card.pulse` | Enable pulsing animation on active tab glow (`false` = steady glow at peak intensity) |
+| `pulse.durationMs`, `pulse.easing` | Glow pulse animation timing (when enabled) |
 
 #### Per-theme preset (`presets.dark`, etc.)
 
@@ -677,6 +689,15 @@ export const layout: LayoutConfig = {
 | `floor.gradient` | Floor radial gradient for scene               |
 | `fog`         | Fog/particle color prefixes and opacity ranges   |
 | `typography`  | `pageTitle`, `pageDescription`, `pageSubtitle`   |
+| `glass`       | Optional `GlassCard` overrides for this preset   |
+
+##### Theme glass overrides (`presets.*.glass`)
+
+| Property              | Description                                           |
+|-----------------------|-------------------------------------------------------|
+| `background.tint`     | Theme token, raw color, or `false` for no tint        |
+| `background.opacity`  | Background fill opacity (`0` with `tint: false` = clear glass) |
+| `saturation`          | Backdrop saturation multiplier (`1` = no color boost) |
 
 #### Theme presets
 
@@ -905,6 +926,7 @@ Controls all navigation elements visible on `/portfolio` except the top site nav
 | Section      | Property    | Description                                              |
 |--------------|-------------|----------------------------------------------------------|
 | `transition` | `animation` | Site-wide page transition preset (`'navFadeIn'`, `'pageTransition'`, etc.) |
+|              | `durationScale` | Optional duration multiplier (`0.5` = 2× faster) |
 | `items[]`    | —           | Page registry (see below)                                |
 
 #### Properties (`items[]`)
@@ -922,7 +944,7 @@ Controls all navigation elements visible on `/portfolio` except the top site nav
 
 ```ts
 export const pages: PagesConfig = {
-  transition: { animation: 'navFadeIn' },
+  transition: { animation: 'navFadeIn', durationScale: 0.5 },
   items: [
     {
       id: 'about',

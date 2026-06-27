@@ -23,6 +23,7 @@ export const theme: ThemeConfig = {
       spreadMin: 0,
       blurMax: 4,
       spreadMax: 4,
+      pulse: false,
     },
     pulse: {
       durationMs: 2800,
@@ -110,6 +111,13 @@ export const theme: ThemeConfig = {
         particleBaseOpacity: 0.25,
         particleOpacityRange: 0.15,
       },
+      glass: {
+        background: {
+          tint: false,
+          opacity: 0,
+        },
+        saturation: 1,
+      },
       typography: sharedTypography,
     },
     light: {
@@ -134,8 +142,8 @@ export const theme: ThemeConfig = {
           to: 'transparent',
         },
         glow: {
-          active: 'rgba(100, 105, 120, 0.15)',
-          activeBright: 'rgba(120, 125, 140, 0.25)',
+          active: 'rgba(17, 24, 39, 0.3)',
+          activeBright: 'rgba(17, 24, 39, 0.5)',
         },
       },
       floor: {

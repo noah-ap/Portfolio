@@ -10,11 +10,16 @@ export interface ThemeColors {
   glow: { active: string; activeBright: string }
 }
 
-export interface GlowTextConfig {
+export interface GlowSurfaceConfig {
   blurMin: number
   spreadMin: number
   blurMax: number
   spreadMax: number
+}
+
+export interface GlowCardConfig extends GlowSurfaceConfig {
+  /** When false, active tab glow is static (no pulse animation) */
+  pulse: boolean
 }
 
 export interface GlowPulseConfig {
@@ -26,8 +31,8 @@ export interface GlowEffectConfig {
   blur: number
   spread: number
   transitionMs: number
-  text: GlowTextConfig
-  card: GlowTextConfig
+  text: GlowSurfaceConfig
+  card: GlowCardConfig
   pulse: GlowPulseConfig
 }
 
@@ -45,6 +50,16 @@ export interface ThemeFloor {
   gradient: string
 }
 
+export interface ThemeGlassOverride {
+  background?: {
+    /** Theme token, raw color, or `false` for no tint (transparent glass) */
+    tint?: string | false
+    opacity?: number
+  }
+  /** `1` disables backdrop saturation boost */
+  saturation?: number
+}
+
 export interface ThemePreset {
   colors: ThemeColors
   floor: ThemeFloor
@@ -54,6 +69,8 @@ export interface ThemePreset {
     pageDescription: { fontSize: number; fontWeight: number; lineHeight: number }
     pageSubtitle: { fontSize: number; fontWeight: number }
   }
+  /** Optional overrides for `GlassCard` when this theme preset is active */
+  glass?: ThemeGlassOverride
 }
 
 export interface ThemeConfig {

@@ -36,10 +36,18 @@ function parseEasing(easing: string): number[] | string {
 
 export function getMotionTransition(
   preset: ResolvedAnimationPreset,
-  useSpring = false
+  useSpring = false,
+  durationScale = 1
 ) {
   if (useSpring && preset.spring) {
     return presetToSpring(preset)
   }
-  return presetToTransition(preset)
+  const transition = presetToTransition(preset)
+  if (durationScale !== 1) {
+    transition.duration *= durationScale
+    if (transition.delay) {
+      transition.delay *= durationScale
+    }
+  }
+  return transition
 }

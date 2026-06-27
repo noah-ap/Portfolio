@@ -16,7 +16,18 @@ export function getTabCardStyle(
   theme: ResolvedTheme,
   isActive: boolean
 ): CSSProperties {
-  const { card, border } = tabs
+  const { card, border, activeHighlight } = tabs
+  const useNavStyle = activeHighlight.mode === 'navStyle'
+  const activeColor =
+    isActive && useNavStyle && activeHighlight.border?.activeColor
+      ? resolveThemeToken(activeHighlight.border.activeColor, theme)
+      : resolveThemeToken(isActive ? border.activeColor : border.inactiveColor, theme)
+  const activeWidth =
+    isActive && useNavStyle && activeHighlight.border?.activeWidth != null
+      ? activeHighlight.border.activeWidth
+      : isActive
+        ? border.activeWidth
+        : border.inactiveWidth
 
   return {
     width: toClamp(card.width),
@@ -26,16 +37,25 @@ export function getTabCardStyle(
     borderRadius: card.borderRadius,
     backgroundColor: resolveThemeToken(card.backgroundColor, theme),
     opacity: isActive ? 1 : card.opacity.inactive,
-    borderWidth: isActive ? border.activeWidth : border.inactiveWidth,
+    borderWidth: isActive ? activeWidth : border.inactiveWidth,
     borderStyle: 'solid',
-    borderColor: resolveThemeToken(
-      isActive ? border.activeColor : border.inactiveColor,
-      theme
-    ),
-    overflow: 'hidden',
+    borderColor: isActive
+      ? activeColor
+      : resolveThemeToken(border.inactiveColor, theme),
     position: 'relative',
     flexShrink: 0,
     userSelect: 'none',
+    boxSizing: 'border-box',
+  }
+}
+
+export function getTabCardContentStyle(tabs: TabsConfig): CSSProperties {
+  return {
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    borderRadius: tabs.card.borderRadius,
+    position: 'relative',
   }
 }
 
@@ -46,6 +66,10 @@ export function getTabInnerStyle(
   hoverPreset: ResolvedAnimationPreset
 ): CSSProperties {
   const scale = isActive ? tabs.active.scale : tabs.default.scale
+  const applyBrightness =
+    isActive &&
+    tabs.active.brightnessAffectsImage &&
+    tabs.active.brightness !== 1
 
   return {
     ['--tab-scale' as string]: scale,
@@ -57,6 +81,7 @@ export function getTabInnerStyle(
     transform: `scale(${scale})`,
     transition: 'transform var(--tab-transition)',
     borderRadius: tabs.card.borderRadius,
+    filter: applyBrightness ? `brightness(${tabs.active.brightness})` : undefined,
   }
 }
 

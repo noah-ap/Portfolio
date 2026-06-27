@@ -3,6 +3,7 @@ import type { PagesConfig } from '@/lib/types/pages'
 export const pages: PagesConfig = {
   transition: {
     animation: 'navFadeIn',
+    durationScale: 0.5,
   },
   items: [    {
       id: 'portfolio',

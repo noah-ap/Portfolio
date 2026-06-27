@@ -20,6 +20,8 @@ export const tabs: TabsConfig = {
   active: {
     scale: 1.1,
     animation: 'cardHover',
+    brightness: 1.35,
+    brightnessAffectsImage: false,
   },
   default: {
     scale: 1,
@@ -30,13 +32,24 @@ export const tabs: TabsConfig = {
   image: {
     objectFit: 'cover',
     objectPosition: 'center',
-    activeBrightness: 1.1,
+    activeBrightness: 1,
   },
   border: {
     activeWidth: 1,
-    inactiveWidth: 0.5,
+    inactiveWidth: 1,
     activeColor: 'ring.active',
     inactiveColor: 'ring.inactive',
+  },
+  activeHighlight: {
+    mode: 'navStyle',
+    border: {
+      activeColor: '#ffffff',
+      activeWidth: 1,
+    },
+    glow: {
+      enabled: true,
+      pulse: true,
+    },
   },
   placeholder: {
     gradientFrom: 'surface.muted',

@@ -37,7 +37,10 @@ function AppShellInner({ children }: AppShellProps) {
         />
         <ScrollProvider config={config.scroll}>
           <main className="flex-1 min-h-0 w-full relative">
-            <PageTransitionLayer animation={config.pages.transition.animation}>
+            <PageTransitionLayer
+              animation={config.pages.transition.animation}
+              durationScale={config.pages.transition.durationScale}
+            >
               {config.navigation.themeToggle.enabled && (
                 <ThemeToggle
                   navigation={config.navigation}

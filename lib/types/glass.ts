@@ -7,7 +7,7 @@ export interface GlassSurfaceConfig {
   blur: ResponsiveOffset
   saturation: number
   background: {
-    tint: string
+    tint: string | false
     opacity: number
   }
   borderRadius: ResponsiveOffset

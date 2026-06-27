@@ -8,13 +8,17 @@ import type { ResolvedAnimationPreset } from '@/lib/types/animations'
 import {
   getTabButtonResetStyle,
   getTabCardStyle,
+  getTabCardContentStyle,
   getTabImageStyle,
   getTabInnerStyle,
   getTabPlaceholderStyle,
   getTabSubtitleOverlayStyle,
   getTabTitleOverlayStyle,
 } from '@/lib/styles/tabStyles'
-import { getActiveCardGlowClassName } from '@/lib/styles/glowStyles'
+import {
+  getActiveTabHighlightClassName,
+  getActiveTabHighlightStyle,
+} from '@/lib/styles/glowStyles'
 
 interface ProjectTabProps {
   project: Project
@@ -45,31 +49,37 @@ export function ProjectTab({
       style={getTabButtonResetStyle()}
     >
       <div
-        className={['project-tab-inner', getActiveCardGlowClassName(isActive)]
-          .filter(Boolean)
-          .join(' ')}
+        className="project-tab-inner"
         style={getTabInnerStyle(tabs, theme, isActive, hoverPreset)}
       >
-        <div style={getTabCardStyle(tabs, theme, isActive)}>
-          {project.image ? (
-            <img
-              src={project.image}
-              alt={project.title}
-              style={getTabImageStyle(tabs, isActive)}
-              loading={isActive ? 'eager' : 'lazy'}
-            />
-          ) : (
-            <div style={getTabPlaceholderStyle(tabs, theme)}>
-              {project.title}
-            </div>
-          )}
-          <div style={getTabTitleOverlayStyle(tabs, theme)}>
-            {project.title}
-            {project.subtitle && (
-              <div style={getTabSubtitleOverlayStyle(tabs, theme, spacing)}>
-                {project.subtitle}
+        <div
+          className={getActiveTabHighlightClassName(tabs, isActive, theme)}
+          style={{
+            ...getTabCardStyle(tabs, theme, isActive),
+            ...getActiveTabHighlightStyle(tabs, isActive, theme),
+          }}
+        >
+          <div style={getTabCardContentStyle(tabs)}>
+            {project.image ? (
+              <img
+                src={project.image}
+                alt={project.title}
+                style={getTabImageStyle(tabs, isActive)}
+                loading={isActive ? 'eager' : 'lazy'}
+              />
+            ) : (
+              <div style={getTabPlaceholderStyle(tabs, theme)}>
+                {project.title}
               </div>
             )}
+            <div style={getTabTitleOverlayStyle(tabs, theme)}>
+              {project.title}
+              {project.subtitle && (
+                <div style={getTabSubtitleOverlayStyle(tabs, theme, spacing)}>
+                  {project.subtitle}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

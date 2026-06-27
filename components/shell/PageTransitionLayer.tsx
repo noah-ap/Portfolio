@@ -10,11 +10,13 @@ import type { AnimationPresetName } from '@/lib/types/animations'
 
 interface PageTransitionLayerProps {
   animation: AnimationPresetName
+  durationScale?: number
   children: ReactNode
 }
 
 export function PageTransitionLayer({
   animation,
+  durationScale = 1,
   children,
 }: PageTransitionLayerProps) {
   const {
@@ -25,7 +27,7 @@ export function PageTransitionLayer({
     onEnterComplete,
   } = usePageTransition()
   const preset = resolveAnimation(animation)
-  const transition = getMotionTransition(preset)
+  const transition = getMotionTransition(preset, false, durationScale)
   const variants = getPageTransitionVariants(preset)
   const notifyEnterRef = useRef(false)
 

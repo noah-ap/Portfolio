@@ -1,9 +1,11 @@
 import type { CSSProperties } from 'react'
+import { theme as themeConfig } from '@/config/theme'
 import { resolveThemeToken } from '@/lib/config/resolveThemeToken'
 import type { ResolvedTheme } from '@/lib/types/theme'
 
 export const ACTIVE_TEXT_GLOW_CLASS = 'active-text-glow'
 export const ACTIVE_CARD_GLOW_CLASS = 'active-card-glow'
+export const ACTIVE_TAB_NAV_GLOW_CLASS = 'active-tab-nav-glow'
 
 function buildTextGlowShadow(
   blur: number,
@@ -19,6 +21,12 @@ function buildCardGlowShadow(
   color: string
 ): string {
   return `0 0 ${blur}px ${spread}px ${color}`
+}
+
+export function isCardGlowPulseEnabled(theme?: ResolvedTheme): boolean {
+  const pulse = theme?.glow?.card?.pulse
+  if (typeof pulse === 'boolean') return pulse
+  return themeConfig.glow.card.pulse
 }
 
 export function buildGlowCssVars(resolved: ResolvedTheme): Record<string, string> {
@@ -43,6 +51,10 @@ export function buildGlowCssVars(resolved: ResolvedTheme): Record<string, string
       dim
     ),
     '--glow-card-shadow-max': [
+      buildCardGlowShadow(card.blurMax, card.spreadMax, bright),
+      `0 0 ${Math.round(card.spreadMax * 1.4)}px 0px ${dim}`,
+    ].join(', '),
+    '--glow-card-shadow-static': [
       buildCardGlowShadow(card.blurMax, card.spreadMax, bright),
       `0 0 ${Math.round(card.spreadMax * 1.4)}px 0px ${dim}`,
     ].join(', '),
@@ -75,6 +87,63 @@ export function getActiveTextGlowClassName(isActive: boolean): string | undefine
   return isActive ? ACTIVE_TEXT_GLOW_CLASS : undefined
 }
 
-export function getActiveCardGlowClassName(isActive: boolean): string | undefined {
-  return isActive ? ACTIVE_CARD_GLOW_CLASS : undefined
+export function getActiveCardGlowClassName(
+  isActive: boolean,
+  theme?: ResolvedTheme
+): string | undefined {
+  if (!isActive || !isCardGlowPulseEnabled(theme)) return undefined
+  return ACTIVE_CARD_GLOW_CLASS
+}
+
+export function getActiveCardGlowStyle(
+  theme: ResolvedTheme,
+  isActive: boolean
+): CSSProperties {
+  if (!isActive || isCardGlowPulseEnabled(theme)) return {}
+
+  return {
+    boxShadow: 'var(--glow-card-shadow-static)',
+    animation: 'none',
+  }
+}
+
+export function isTabCardGlowMode(tabs: { activeHighlight: { mode: string } }): boolean {
+  return tabs.activeHighlight.mode === 'cardGlow'
+}
+
+export function getActiveTabHighlightClassName(
+  tabs: { activeHighlight: { mode: string; glow: { enabled: boolean; pulse: boolean } } },
+  isActive: boolean,
+  theme?: ResolvedTheme
+): string | undefined {
+  if (!isActive) return undefined
+
+  if (isTabCardGlowMode(tabs)) {
+    return getActiveCardGlowClassName(isActive, theme)
+  }
+
+  if (!tabs.activeHighlight.glow.enabled) return undefined
+  if (tabs.activeHighlight.glow.pulse) return ACTIVE_TAB_NAV_GLOW_CLASS
+  return undefined
+}
+
+export function getActiveTabHighlightStyle(
+  tabs: { activeHighlight: { mode: string; glow: { enabled: boolean; pulse: boolean } } },
+  isActive: boolean,
+  theme?: ResolvedTheme
+): CSSProperties {
+  if (!isActive) return {}
+
+  if (isTabCardGlowMode(tabs)) {
+    return getActiveCardGlowStyle(theme!, isActive)
+  }
+
+  if (!tabs.activeHighlight.glow.enabled || tabs.activeHighlight.glow.pulse) {
+    return {}
+  }
+
+  return {
+    boxShadow: 'var(--glow-text-shadow-min)',
+    animation: 'none',
+  }
 }

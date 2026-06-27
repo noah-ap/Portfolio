@@ -36,7 +36,7 @@ export function ThemeToggle({
 
   return (
     <div
-      className="flex flex-col"
+      className="flex flex-col select-none"
       style={getThemeToggleContainerStyle(themeToggle, width, breakpoints)}
     >
       {PRESETS.map((preset) => {
@@ -59,6 +59,7 @@ export function ThemeToggle({
               border: 'none',
               cursor: 'pointer',
               textTransform: 'capitalize',
+              userSelect: 'none',
             }}
           >
             {preset}

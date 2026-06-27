@@ -26,6 +26,10 @@ export interface TabsConfig {
   active: {
     scale: number
     animation: AnimationPresetName
+    /** CSS brightness multiplier when tab is active (1 = unchanged) */
+    brightness: number
+    /** When false, brightness is not applied (image stays natural; border/glow still show) */
+    brightnessAffectsImage: boolean
   }
   default: {
     scale: number
@@ -43,6 +47,19 @@ export interface TabsConfig {
     inactiveWidth: number
     activeColor: string
     inactiveColor: string
+  }
+  activeHighlight: {
+    /** `cardGlow` = theme box-shadow glow; `navStyle` = white border + nav text-style glow */
+    mode: 'cardGlow' | 'navStyle'
+    border?: {
+      activeColor?: string
+      activeWidth?: number
+    }
+    glow: {
+      enabled: boolean
+      /** Match nav bar text glow pulse (`active-text-glow`) */
+      pulse: boolean
+    }
   }
   placeholder: {
     gradientFrom: string

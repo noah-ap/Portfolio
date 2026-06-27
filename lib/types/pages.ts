@@ -12,6 +12,8 @@ export interface PageDefinition {
 export interface PagesConfig {
   transition: {
     animation: AnimationPresetName
+    /** Multiplier applied to preset duration (0.5 = 2× faster) */
+    durationScale?: number
   }
   items: PageDefinition[]
 }
